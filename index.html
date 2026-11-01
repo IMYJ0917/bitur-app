@@ -100,6 +100,13 @@ async function load(){
     DATA=j;LS.set('bitur.m.data',j);LS.set('bitur.m.at',new Date().toISOString());q.textContent='↻';return null;
   }catch(e){q.textContent='↻';return e.message}
 }
+/* QR로 들어온 설정: 주소 뒤 #setup=... 에 저장소와 읽기 토큰이 들어 있다. # 뒤는 서버로 전송되지 않고, 읽자마자 주소창에서 지운다 */
+function setupFromHash(){
+  const h=location.hash.slice(1);if(!h.startsWith('setup='))return;
+  try{const b=h.slice(6).replace(/-/g,'+').replace(/_/g,'/');const j=JSON.parse(atob(b+'='.repeat((4-b.length%4)%4)));
+    if(j.r&&j.t){LS.set('bitur.m.repo',String(j.r));LS.set('bitur.m.token',String(j.t))}}catch(e){}
+  history.replaceState(null,'',location.pathname+location.search);
+}
 function route(){
   const h=location.hash.slice(1),B=document.body;
   B.classList.toggle('solo',h==='settings');
@@ -158,7 +165,7 @@ $('#q').addEventListener('input',()=>list());
 $('#gear').onclick=()=>{location.hash='settings'};
 $('#sync').onclick=async()=>{const e=await load();route();if(e)list(e)};
 window.addEventListener('hashchange',route);
-(async()=>{route();const e=await load();route();if(e&&DATA)list(e)})();
+(async()=>{setupFromHash();route();const e=await load();route();if(e&&DATA)list(e)})();
 </script>
 </body>
 </html>
