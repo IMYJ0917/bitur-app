@@ -13,12 +13,12 @@
 <title>Bitur</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
-/* Bitur 폰용 가벼운 버전: 업체 검색과 전화 걸기. 코드는 공개 저장소에 있고, 업체 정보는 비공개 저장소에서 토큰으로만 가져온다 */
+/* Bitur 폰 앱: 오늘·일정·할 일·지원·업체 조회 전용. 코드는 공개 저장소에 있고, 데이터는 비공개 저장소에서 토큰으로만 가져온다 */
 :root{--bg:#f5f5f7;--card:#fff;--line:#e3e3e8;--fg:#1d1d1f;--muted:#6e6e73;--accent:#1f9d5c;--accent-d:#17794a;--on:#fff;--chip:#eef0f3;--bad:#d1342b;--shadow:0 1px 2px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.05);color-scheme:light}
 @media (prefers-color-scheme:dark){:root{--bg:#1c1c1e;--card:#2c2c2e;--line:#3a3a3d;--fg:#f5f5f7;--muted:#98989f;--accent:#30d158;--accent-d:#1fa843;--on:#06240f;--chip:#3a3a3d;--bad:#ff6b61;--shadow:0 1px 2px rgba(0,0,0,.4);color-scheme:dark}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;min-height:100%}
-body{background:var(--bg);color:var(--fg);font:15px/1.55 "Pretendard Variable",Pretendard,-apple-system,"Malgun Gothic",sans-serif;letter-spacing:-.006em;padding-bottom:env(safe-area-inset-bottom)}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 "Pretendard Variable",Pretendard,-apple-system,"Malgun Gothic",sans-serif;letter-spacing:-.006em;padding-bottom:calc(64px + env(safe-area-inset-bottom))}
 header{position:sticky;top:0;z-index:3;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line)}
 .top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .top svg{width:30px;height:30px}.top b{font-size:19px;letter-spacing:-.02em}.top .sp{flex:1}
@@ -38,7 +38,9 @@ body:not(.detail) #pane,body.solo #pane{display:none}
 @media (min-width:640px){
   /* 갤럭시 폴드 펼침(안쪽 화면): 왼쪽 목록, 오른쪽 상세를 같이 */
   .wrap{display:grid;grid-template-columns:minmax(300px,400px) minmax(0,1fr);gap:8px;align-items:start}
-  body.solo .wrap{grid-template-columns:minmax(0,680px);justify-content:center}
+  body.solo .wrap{grid-template-columns:minmax(0,920px);justify-content:center}
+  body.solo main{padding:12px 16px 40px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
   main{padding:12px 8px 40px 16px;max-width:none;margin:0}
   #pane{display:block;position:sticky;top:110px;max-height:calc(100vh - 120px);overflow:auto;padding:12px 16px 24px 8px;max-width:none;margin:0}
   body.detail main,body.detail #bar{display:block}
@@ -64,6 +66,28 @@ h1{font-size:24px;margin:2px 0 4px;letter-spacing:-.025em}
 label{display:block;font-size:12.5px;color:var(--muted);margin:12px 0 4px}
 .note{font-size:13px;color:var(--muted)}
 .tag{display:inline-block;background:var(--chip);border-radius:6px;padding:0 8px;font-size:12px;margin:2px 4px 2px 0}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:4;display:grid;grid-template-columns:repeat(5,1fr);background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+.tabs a{display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 0 6px;color:var(--muted);text-decoration:none;font-size:11px;font-weight:500;position:relative}
+.tabs a.on{color:var(--accent)}
+.tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs em{position:absolute;top:3px;left:calc(50% + 8px);background:var(--bad);color:#fff;border-radius:9px;font:600 10px/15px inherit;font-style:normal;min-width:15px;padding:0 4px;text-align:center}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.kp a{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 6px;text-align:center;color:inherit;text-decoration:none}
+.kp b{display:block;font-size:22px;line-height:1.2}.kp span{font-size:11.5px;color:var(--muted)}.kp .hot b{color:var(--bad)}
+h2{font-size:15px;margin:0 0 6px;letter-spacing:-.01em}
+.li{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line);min-width:0;color:inherit;text-decoration:none}.li:first-of-type{border-top:0}
+.li .t{flex:1;min-width:0;overflow-wrap:anywhere}.li small{display:block;color:var(--muted);font-size:12.5px}
+.d{flex:none;font-size:12px;font-weight:600;border-radius:6px;padding:1px 7px;background:var(--chip);color:var(--muted)}
+.d.late{background:var(--bad);color:#fff}.d.soon{background:color-mix(in srgb,#e69500 28%,var(--card));color:var(--fg)}
+.done .t{color:var(--muted);text-decoration:line-through}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.cal span{font-size:12px;color:var(--muted);padding:4px 0}
+.cal button{background:none;border:0;color:var(--fg);font:500 14px inherit;font-family:inherit;padding:7px 0 11px;border-radius:9px;position:relative;min-height:44px}
+.cal button.out{opacity:.35}.cal button.now{color:var(--accent);font-weight:700}.cal button.sel{background:var(--accent);color:var(--on)}
+.cal i{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);width:5px;height:5px;border-radius:50%;background:var(--accent)}.cal .sel i{background:var(--on)}
+.mh{display:flex;align-items:center;gap:6px;margin-bottom:8px}.mh b{flex:1;font-size:17px}.mh button{background:var(--chip);border:0;color:var(--fg);border-radius:8px;padding:5px 12px;font:inherit}
+details.cs{border-top:1px solid var(--line)}details.cs:first-of-type{border-top:0}details.cs summary{list-style:none;padding:9px 0;display:flex;gap:8px;align-items:center}details.cs summary::-webkit-details-marker{display:none}
+details.cs p{margin:0 0 9px;font-size:13.5px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -74,6 +98,7 @@ label{display:block;font-size:12.5px;color:var(--muted);margin:12px 0 4px}
 <header><div class="top"><svg><use href="#logo"/></svg><b>Bitur</b><span class="sp"></span><button id="sync" aria-label="새로고침">↻</button><button id="gear" aria-label="설정">⚙</button></div>
 <div id="bar"><input id="q" type="search" placeholder="업체·지역·담당자·전화·주소 찾기" aria-label="검색" autocomplete="off"><div class="chips" id="chips"></div></div></header>
 <div class="wrap"><main id="view"></main><section id="pane"></section></div>
+<nav class="tabs" id="tabs" aria-label="메뉴"></nav>
 <script>
 const $=s=>document.querySelector(s),view=$('#view');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -85,6 +110,28 @@ const norm=s=>String(s||'').toLowerCase();
 const params=new URLSearchParams(location.search);
 const wide=()=>matchMedia('(min-width:640px)').matches;
 const pane=$('#pane');
+const TABS=[['today','오늘','<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>'],['cal','일정','<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'],['tasks','할 일','<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12l3 3 5-6"/>'],['cases','지원','<path d="M4 14v-2a8 8 0 0116 0v2"/><rect x="3" y="14" width="4" height="6" rx="1"/><rect x="17" y="14" width="4" height="6" rx="1"/>'],['v','업체','<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 8h1M14 8h1M9 12h1M14 12h1M10 21v-4h4v4"/>']];
+const pad=n=>String(n).padStart(2,'0'),ymd=x=>`${x.getFullYear()}-${pad(x.getMonth()+1)}-${pad(x.getDate())}`,todayS=()=>ymd(new Date());
+const days=(a,b)=>Math.round((new Date(a+'T00:00')-new Date(b+'T00:00'))/864e5);
+const dTag=(due,t=todayS())=>{const n=days(due,t);return `<span class="d ${n<0?'late':n<=1?'soon':''}">${n<0?'D+'+-n:n===0?'오늘':'D-'+n}</span>`};
+const split=()=>{const t=todayS(),T=DATA?.tasks||[],open=T.filter(x=>!x.done),now=x=>(x.due&&x.due<=t)||x.pin===t,by=(a,b)=>(a.due||'9').localeCompare(b.due||'9');return {t,now:open.filter(now).sort(by),week:open.filter(x=>!now(x)&&x.due&&days(x.due,t)<=7).sort(by),later:open.filter(x=>!now(x)&&!(x.due&&days(x.due,t)<=7)).sort(by),done:T.filter(x=>x.done)}};
+const taskLi=x=>`<div class="li ${x.done?'done':''}"><div class="t">${esc(x.text)}<small>${[x.project&&'#'+x.project,x.priority==='높음'&&'높음',x.repeat&&'↻ '+x.repeat,x.subs&&`☑ ${x.subsDone}/${x.subs}`].filter(Boolean).map(esc).join(' · ')}</small></div>${x.due?dTag(x.due):''}</div>`;
+const evLi=e=>`<div class="li"><div class="t">${esc(e.title)}<small>${esc(e.date.slice(5))}${e.end?'~'+esc(e.end.slice(5)):''}${e.start?' '+esc(e.start):''}${e.until?'~'+esc(e.until):''} · ${esc(e.kind)}</small></div></div>`;
+const caseLi=c=>`<details class="cs"><summary><span class="d">${esc(c.status)}</span><span class="t" style="flex:1;min-width:0">${esc(c.title)}</span></summary><p>${esc(c.num)} · ${esc(c.vendor)}${c.machine?' · '+esc(c.machine):''} · ${esc(c.date)}${c.done?' ~ '+esc(c.done):''}${c.todo?'<br>다음: '+esc(c.todo):''}</p></details>`;
+const needData=()=>DATA?.tasks?'':'<div class="card note">PC Bitur 설정의 폰 동기화에서 "할 일·일정·프로젝트·지원 건 요약도 올리기"를 켜고 정보 올리기를 눌러 주세요.</div>';
+const metaLine=msg=>{const at=LS.get('bitur.m.at','');const when=at?new Date(at).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';return `<div class="meta">${DATA?.updated?`PC 기준 ${esc(DATA.updated)}`:''}${when?` · 받은 시각 ${esc(when)}`:''}${msg?` · <span class="err">${esc(msg)} (저장된 정보를 보여 줘요)</span>`:''}</div>`};
+function drawTabs(tab){const s=DATA?split():null;$('#tabs').innerHTML=TABS.map(([k,l,i])=>{const n=k==='today'&&s?s.now.length:k==='cases'?(DATA?.cases||[]).filter(c=>c.status!=='해결').length:0;return `<a href="#${k}" class="${tab===k?'on':''}"><svg viewBox="0 0 24 24">${i}</svg>${l}${n?`<em>${n}</em>`:''}</a>`}).join('')}
+function today(msg){if(!DATA)return list(msg);const s=split(),t=s.t,ev=(DATA.events||[]).filter(e=>(e.end||e.date)>=t&&days(e.date,t)<=7),cs=(DATA.cases||[]).filter(c=>c.status!=='해결'),over=s.now.filter(x=>x.due&&x.due<t),call=(DATA.contacts||[]).filter(c=>days(c.next,t)<=7),pj=(DATA.projects||[]).filter(p=>p.due>=t);
+ const d=new Date();view.innerHTML=`<h1>${d.getMonth()+1}월 ${d.getDate()}일 ${'일월화수목금토'[d.getDay()]}요일</h1>${metaLine(msg)}${needData()}<div class="kp"><a href="#tasks"><b>${s.now.length}</b><span>오늘 할 일</span></a><a href="#tasks" class="${over.length?'hot':''}"><b>${over.length}</b><span>지난 마감</span></a><a href="#cal"><b>${ev.filter(e=>e.date<=t).length}</b><span>오늘 일정</span></a><a href="#cases"><b>${cs.length}</b><span>열린 지원</span></a></div>
+ <div class="two"><div><div class="card"><h2>오늘 할 일</h2>${s.now.map(taskLi).join('')||'<p class="note" style="margin:0">오늘 할 일이 없어요</p>'}${s.week.length?`<h2 style="margin-top:12px">이번 주</h2>${s.week.map(taskLi).join('')}`:''}</div></div><div>${ev.length?`<div class="card"><h2>일정</h2>${ev.slice(0,6).map(evLi).join('')}</div>`:''}${cs.length?`<div class="card"><h2>열린 지원</h2>${cs.slice(0,6).map(caseLi).join('')}</div>`:''}${call.length?`<div class="card"><h2>연락할 곳</h2>${call.slice(0,5).map(c=>`<a class="li" href="#v/${encodeURIComponent(c.id)}"><div class="t">${esc(c.name)}</div>${dTag(c.next)}</a>`).join('')}</div>`:''}${pj.length?`<div class="card"><h2>프로젝트 마감</h2>${pj.slice(0,5).map(p=>`<div class="li"><div class="t">${esc(p.name)}<small>${p.done}/${p.total} 완료</small></div>${dTag(p.due)}</div>`).join('')}</div>`:''}</div></div>`}
+let calM=null,calSel='';
+function cal(){if(!DATA)return list();const t=todayS();if(!calM)calM=new Date(t.slice(0,7)+'-01T00:00');calSel=calSel||t;const y=calM.getFullYear(),m=calM.getMonth(),first=new Date(y,m,1),start=new Date(y,m,1-((first.getDay()+6)%7)),ev=DATA.events||[],T=DATA.tasks||[],P=DATA.projects||[],C=DATA.cases||[];
+ const on=s=>({e:ev.filter(e=>e.date<=s&&s<=(e.end||e.date)),t:T.filter(x=>x.due===s),p:P.filter(x=>x.due===s),c:C.filter(x=>x.date===s)});let cells='';
+ for(let i=0;i<42;i++){const c=new Date(start);c.setDate(start.getDate()+i);if(i>=35&&c.getMonth()!==m)break;const s=ymd(c),o=on(s),has=o.e.length+o.t.length+o.p.length+o.c.length;cells+=`<button data-day="${s}" class="${c.getMonth()!==m?'out':''} ${s===t?'now':''} ${s===calSel?'sel':''}">${c.getDate()}${has?'<i></i>':''}</button>`}
+ const o=on(calSel);view.innerHTML=`<div class="card"><div class="mh"><b>${y}년 ${m+1}월</b><button data-m="-1" aria-label="이전 달">‹</button><button data-m="0">오늘</button><button data-m="1" aria-label="다음 달">›</button></div><div class="cal">${'월화수목금토일'.split('').map(x=>`<span>${x}</span>`).join('')}${cells}</div></div><div class="card"><h2>${esc(calSel.slice(5))}</h2>${o.e.map(evLi).join('')}${o.p.map(p=>`<div class="li"><div class="t">◆ ${esc(p.name)}<small>프로젝트 마감</small></div></div>`).join('')}${o.t.map(taskLi).join('')}${o.c.map(c=>`<div class="li"><div class="t">${esc(c.num)} ${esc(c.title)}<small>지원 접수</small></div></div>`).join('')||(o.e.length+o.p.length+o.t.length?'':'<p class="note" style="margin:0">일정이 없어요</p>')}</div>`}
+let tasksF='now',casesF='open';
+function tasks(){if(!DATA)return list();const s=split(),f=[['now','오늘',s.now],['week','이번 주',s.week],['later','나중에',s.later],['done','완료',s.done]],cur=f.find(x=>x[0]===tasksF);view.innerHTML=`${needData()}<div class="chips" style="padding:0 0 10px">${f.map(([k,l,a])=>`<button class="chip ${tasksF===k?'on':''}" data-tf="${k}">${l} ${a.length}</button>`).join('')}</div><div class="card">${cur[2].map(taskLi).join('')||'<p class="note" style="margin:0">없어요</p>'}</div>`}
+function cases(){if(!DATA)return list();const C=DATA.cases||[],f=[['open','열림',C.filter(c=>c.status!=='해결')],['done','해결',C.filter(c=>c.status==='해결')],['all','전체',C]],cur=f.find(x=>x[0]===casesF);view.innerHTML=`${needData()}<div class="chips" style="padding:0 0 10px">${f.map(([k,l,a])=>`<button class="chip ${casesF===k?'on':''}" data-cf="${k}">${l} ${a.length}</button>`).join('')}</div><div class="card">${cur[2].map(caseLi).join('')||'<p class="note" style="margin:0">없어요</p>'}</div>`}
 
 async function load(){
   const q=$('#sync');q.textContent='…';
@@ -108,11 +155,16 @@ function setupFromHash(){
   history.replaceState(null,'',location.pathname+location.search);
 }
 function route(){
-  const h=location.hash.slice(1),B=document.body;
-  B.classList.toggle('solo',h==='settings');
+  const h=location.hash.slice(1),B=document.body,tab=h.split('/')[0]||'today';
+  B.classList.toggle('solo',tab!=='v');
   B.classList.toggle('detail',h.startsWith('v/'));
-  $('#bar').hidden=h==='settings';
+  $('#bar').hidden=tab!=='v';
+  drawTabs(tab);
   if(h==='settings')return settings();
+  if(tab==='today')return today();
+  if(tab==='cal')return cal();
+  if(tab==='tasks')return tasks();
+  if(tab==='cases')return cases();
   list();                                   /* 목록은 항상 그리고, 상세는 오른쪽 칸(펼침)이나 전체 화면(접힘)에 */
   if(h.startsWith('v/'))detail(decodeURIComponent(h.slice(2)));
   else pane.innerHTML=wide()?'<div class="hint">왼쪽에서 업체를 고르면 여기에 나와요</div>':'';
@@ -131,10 +183,10 @@ function list(msg){
 }
 function detail(id){
   const v=(DATA?.vendors||[]).find(x=>x.id===id);
-  if(!v){pane.innerHTML='<a class="back" href="#">← 목록</a><div class="empty">업체를 찾지 못했어요</div>';return}
+  if(!v){pane.innerHTML='<a class="back" href="#v">← 목록</a><div class="empty">업체를 찾지 못했어요</div>';return}
   const row=(k,val,btns='')=>val?`<div class="row"><span class="k">${k}</span><span class="v">${esc(val)}</span>${btns?`<span class="btns">${btns}</span>`:''}</div>`:'';
   const map=v.addr?`<a class="btn" href="https://map.naver.com/p/search/${encodeURIComponent(v.addr)}" target="_blank" rel="noopener">지도</a>`:'';
-  pane.innerHTML=`<a class="back" href="#">← 목록</a><h1>${esc(v.name)}</h1><div>${(v.region||v.city)?`<span class="tag">${esc([v.region,v.city].filter(Boolean).join(' '))}</span>`:''}${(v.machines||[]).map(m=>`<span class="tag">${esc(m)}</span>`).join('')}</div>
+  pane.innerHTML=`<a class="back" href="#v">← 목록</a><h1>${esc(v.name)}</h1><div>${(v.region||v.city)?`<span class="tag">${esc([v.region,v.city].filter(Boolean).join(' '))}</span>`:''}${(v.machines||[]).map(m=>`<span class="tag">${esc(m)}</span>`).join('')}</div>
   <div class="card" style="margin-top:10px">${row('담당자',[v.contact,v.title].filter(Boolean).join(' '))}
    ${row('휴대폰',v.mobile,`<a class="btn main" href="tel:${tel(v.mobile)}">전화</a><a class="btn" href="sms:${tel(v.mobile)}">문자</a>`)}
    ${row('전화',v.phone,`<a class="btn main" href="tel:${tel(v.phone)}">전화</a>`)}
@@ -145,7 +197,7 @@ function detail(id){
 }
 function settings(){
   const c=cfg();
-  view.innerHTML=`<a class="back" href="#">← 목록</a><h1>설정</h1><div class="card"><p class="note" style="margin-top:0">PC의 Bitur가 올린 업체 정보를 비공개 GitHub 저장소에서 읽어 와요. 토큰은 이 폰에만 저장돼요.</p>
+  view.innerHTML=`<h1>설정</h1><div class="card"><p class="note" style="margin-top:0">PC의 Bitur가 올린 정보를 비공개 GitHub 저장소에서 읽어 와요. 폰에서는 보기만 해요. 토큰은 이 폰에만 저장돼요.</p>
    <label for="repo">데이터 저장소 (예: 아이디/bitur-data)</label><input id="repo" type="text" value="${esc(c.repo)}" autocapitalize="off" autocorrect="off" spellcheck="false">
    <label for="tok">읽기 전용 토큰</label><input id="tok" type="password" value="${esc(c.token)}" autocomplete="off">
    <p class="note">토큰은 GitHub에서 'Contents: Read-only' 권한만 준 것을 쓰세요. 폰을 잃어버리면 GitHub에서 토큰만 지우면 돼요.</p>
@@ -157,16 +209,20 @@ document.addEventListener('click',async e=>{
   const r=e.target.closest('[data-r]');if(r){region=r.dataset.r;list();return}
   const cp=e.target.closest('[data-copy]');if(cp){try{await navigator.clipboard.writeText(cp.dataset.copy);cp.textContent='복사됨'}catch(x){}return}
   if(e.target.closest('a.call'))return;
+  const dy=e.target.closest('[data-day]');if(dy){calSel=dy.dataset.day;cal();return}
+  const mv=e.target.closest('[data-m]');if(mv){const v=+mv.dataset.m;calM=v?new Date(calM.getFullYear(),calM.getMonth()+v,1):null;if(!v)calSel='';cal();return}
+  const tf=e.target.closest('[data-tf]');if(tf){tasksF=tf.dataset.tf;tasks();return}
+  const cf=e.target.closest('[data-cf]');if(cf){casesF=cf.dataset.cf;cases();return}
   const it=e.target.closest('.item');if(it){location.hash='#v/'+encodeURIComponent(it.dataset.id)}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList?.contains('item'))e.target.click()});
 matchMedia('(min-width:640px)').addEventListener('change',()=>route());   /* 폴드를 접거나 펼 때 바로 다시 배치 */
 $('#q').addEventListener('input',()=>list());
 $('#gear').onclick=()=>{location.hash='settings'};
-$('#sync').onclick=async()=>{const e=await load();route();if(e)list(e)};
+$('#sync').onclick=async()=>{const e=await load();route();if(e&&(location.hash.slice(1).split('/')[0]||'today')==='today')today(e)};
 window.addEventListener('hashchange',route);
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});   /* 앱처럼 설치 + 오프라인 열기 */
-(async()=>{setupFromHash();route();const e=await load();route();if(e&&DATA)list(e)})();
+(async()=>{setupFromHash();route();const e=await load();route();if(e&&DATA&&!location.hash)today(e)})();
 </script>
 </body>
 </html>
