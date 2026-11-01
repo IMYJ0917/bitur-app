@@ -1,7 +1,7 @@
 {
   "name": "Bitur",
   "short_name": "Bitur",
-  "description": "업체 정보 조회",
+  "description": "오늘 할 일, 일정, 지원 건, 업체 조회",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
