@@ -165,6 +165,7 @@ $('#q').addEventListener('input',()=>list());
 $('#gear').onclick=()=>{location.hash='settings'};
 $('#sync').onclick=async()=>{const e=await load();route();if(e)list(e)};
 window.addEventListener('hashchange',route);
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});   /* 앱처럼 설치 + 오프라인 열기 */
 (async()=>{setupFromHash();route();const e=await load();route();if(e&&DATA)list(e)})();
 </script>
 </body>
