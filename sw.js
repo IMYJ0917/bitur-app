@@ -1,6 +1,6 @@
 /* Bitur 폰 앱: 화면 파일을 폰에 저장해서 신호가 없어도 열리게 한다. 인터넷이 되면 항상 최신 파일을 먼저 받는다.
    같은 사이트의 파일만 다룬다 — 업체 정보(GitHub API)와 토큰이 들어가는 요청은 건드리지도 저장하지도 않는다. */
-const V = 'bitur-m-1';
+const V = 'bitur-m-2';
 const FILES = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png'];
 
 self.addEventListener('install', e => {
