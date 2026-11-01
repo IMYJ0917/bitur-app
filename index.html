@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f9d5c">
+<meta name="color-scheme" content="light dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bitur">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Bitur</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<style>
+/* Bitur 폰용 가벼운 버전: 업체 검색과 전화 걸기. 코드는 공개 저장소에 있고, 업체 정보는 비공개 저장소에서 토큰으로만 가져온다 */
+:root{--bg:#f5f5f7;--card:#fff;--line:#e3e3e8;--fg:#1d1d1f;--muted:#6e6e73;--accent:#1f9d5c;--accent-d:#17794a;--on:#fff;--chip:#eef0f3;--bad:#d1342b;--shadow:0 1px 2px rgba(0,0,0,.06),0 4px 14px rgba(0,0,0,.05);color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#1c1c1e;--card:#2c2c2e;--line:#3a3a3d;--fg:#f5f5f7;--muted:#98989f;--accent:#30d158;--accent-d:#1fa843;--on:#06240f;--chip:#3a3a3d;--bad:#ff6b61;--shadow:0 1px 2px rgba(0,0,0,.4);color-scheme:dark}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--fg);font:15px/1.55 "Pretendard Variable",Pretendard,-apple-system,"Malgun Gothic",sans-serif;letter-spacing:-.006em;padding-bottom:env(safe-area-inset-bottom)}
+header{position:sticky;top:0;z-index:3;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.top svg{width:30px;height:30px}.top b{font-size:19px;letter-spacing:-.02em}.top .sp{flex:1}
+.top button{background:none;border:0;color:var(--muted);font-size:20px;padding:4px 8px}
+input[type=search],input[type=text],input[type=password]{width:100%;font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 0;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:3px 12px;font:500 13px inherit;font-family:inherit}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--on)}
+.wrap{max-width:1180px;margin:0 auto}
+main{padding:12px 16px 40px;max-width:680px;margin:0 auto}
+#pane{padding:12px 16px 40px;max-width:680px;margin:0 auto}
+body.detail main,body.detail #bar{display:none}
+body:not(.detail) #pane,body.solo #pane{display:none}
+.item{cursor:pointer}.item.sel{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 30%,transparent)}
+.hint{color:var(--muted);text-align:center;padding:60px 0}
+@media (min-width:640px){
+  /* 갤럭시 폴드 펼침(안쪽 화면): 왼쪽 목록, 오른쪽 상세를 같이 */
+  .wrap{display:grid;grid-template-columns:minmax(300px,400px) minmax(0,1fr);gap:8px;align-items:start}
+  body.solo .wrap{grid-template-columns:minmax(0,680px);justify-content:center}
+  main{padding:12px 8px 40px 16px;max-width:none;margin:0}
+  #pane{display:block;position:sticky;top:110px;max-height:calc(100vh - 120px);overflow:auto;padding:12px 16px 24px 8px;max-width:none;margin:0}
+  body.detail main,body.detail #bar{display:block}
+  body.solo #pane{display:none}
+  #pane .back{display:none}
+  .item{padding:14px 16px}.row{padding:13px 0}
+  h1{font-size:28px}
+}
+.meta{color:var(--muted);font-size:12.5px;margin:2px 2px 10px}
+.item{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow);text-decoration:none;color:inherit;min-height:58px}
+.item .t{flex:1;min-width:0}.item b{display:block;font-size:16px}.item span{color:var(--muted);font-size:13px}
+.call{flex:none;width:46px;height:46px;border-radius:50%;background:var(--accent);color:var(--on);display:flex;align-items:center;justify-content:center;font-size:19px;text-decoration:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);margin-bottom:12px}
+h1{font-size:24px;margin:2px 0 4px;letter-spacing:-.025em}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:11px 0;border-top:1px solid var(--line)}.row:first-of-type{border-top:0}
+.row .k{width:56px;flex:none;color:var(--muted);font-size:13px}.row .v{flex:1 1 140px;min-width:0;overflow-wrap:anywhere}
+.row .btns{display:flex;gap:8px;margin-left:auto}
+.btn{flex:none;border:1px solid var(--line);background:var(--chip);color:var(--fg);border-radius:9px;padding:9px 14px;font:500 13px inherit;font-family:inherit;text-decoration:none}
+.btn.main{background:var(--accent);border-color:var(--accent);color:var(--on)}
+.back{display:inline-block;color:var(--accent);text-decoration:none;margin:2px 0 8px}
+.empty{color:var(--muted);text-align:center;padding:40px 0}
+.err{color:var(--bad)}
+label{display:block;font-size:12.5px;color:var(--muted);margin:12px 0 4px}
+.note{font-size:13px;color:var(--muted)}
+.tag{display:inline-block;background:var(--chip);border-radius:6px;padding:0 8px;font-size:12px;margin:2px 4px 2px 0}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+ <linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16393d"/><stop offset="1" stop-color="#04100f"/></linearGradient>
+ <linearGradient id="gt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2fd4c0"/><stop offset="1" stop-color="#0f7a72"/></linearGradient></defs>
+ <symbol id="logo" viewBox="0 18 100 64"><path d="M18 49C32 42 48 38 64 39C78 40 90 47 97 54C88 60 76 65 60 66C44 66 30 60 18 54Z" fill="url(#gb)"/><path d="M26 25C22 22 14 20 6 14C6 22 14 28 24 29Z" fill="url(#gt)"/><path d="M26 25C30 22 38 20 46 14C46 22 38 28 28 29Z" fill="url(#gt)"/><path d="M44 40C48 31 55 25 63 22C62 28 62 34 65 40Z" fill="url(#gt)"/><path d="M18 54C30 60 44 66 60 66C76 65 88 60 97 54C84 58 70 60 56 59C40 58 28 56 18 54Z" fill="url(#gt)"/><path d="M60 63C56 71 48 77 39 79C43 73 47 67 51 61Z" fill="url(#gt)"/></symbol></svg>
+<header><div class="top"><svg><use href="#logo"/></svg><b>Bitur</b><span class="sp"></span><button id="sync" aria-label="새로고침">↻</button><button id="gear" aria-label="설정">⚙</button></div>
+<div id="bar"><input id="q" type="search" placeholder="업체·지역·담당자·전화·주소 찾기" aria-label="검색" autocomplete="off"><div class="chips" id="chips"></div></div></header>
+<div class="wrap"><main id="view"></main><section id="pane"></section></div>
+<script>
+const $=s=>document.querySelector(s),view=$('#view');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LS={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let DATA=LS.get('bitur.m.data',null),region='';
+const cfg=()=>({repo:LS.get('bitur.m.repo',''),token:LS.get('bitur.m.token','')});
+const tel=s=>String(s||'').replace(/[^\d+]/g,'');
+const norm=s=>String(s||'').toLowerCase();
+const params=new URLSearchParams(location.search);
+const wide=()=>matchMedia('(min-width:640px)').matches;
+const pane=$('#pane');
+
+async function load(){
+  const q=$('#sync');q.textContent='…';
+  try{
+    let j;
+    if(params.get('data')){j=await (await fetch(params.get('data'),{cache:'no-store'})).json()}   /* 시험용: ?data=sample.json */
+    else{const c=cfg();if(!c.repo||!c.token)throw new Error('설정이 필요해요');
+      const r=await fetch(`https://api.github.com/repos/${c.repo}/contents/vendors.json`,{headers:{Authorization:`Bearer ${c.token}`,Accept:'application/vnd.github.raw+json'},cache:'no-store'});
+      if(r.status===401||r.status===403)throw new Error('토큰이 맞지 않거나 만료됐어요');
+      if(r.status===404)throw new Error('저장소나 vendors.json을 찾지 못했어요');
+      if(!r.ok)throw new Error('불러오지 못했어요 ('+r.status+')');
+      j=await r.json()}
+    DATA=j;LS.set('bitur.m.data',j);LS.set('bitur.m.at',new Date().toISOString());q.textContent='↻';return null;
+  }catch(e){q.textContent='↻';return e.message}
+}
+function route(){
+  const h=location.hash.slice(1),B=document.body;
+  B.classList.toggle('solo',h==='settings');
+  B.classList.toggle('detail',h.startsWith('v/'));
+  $('#bar').hidden=h==='settings';
+  if(h==='settings')return settings();
+  list();                                   /* 목록은 항상 그리고, 상세는 오른쪽 칸(펼침)이나 전체 화면(접힘)에 */
+  if(h.startsWith('v/'))detail(decodeURIComponent(h.slice(2)));
+  else pane.innerHTML=wide()?'<div class="hint">왼쪽에서 업체를 고르면 여기에 나와요</div>':'';
+}
+function list(msg){
+  if(!DATA){view.innerHTML=`<div class="empty">${msg?`<p class="err">${esc(msg)}</p>`:''}<p>먼저 설정에서 저장소와 토큰을 넣어 주세요</p><a class="btn main" href="#settings">설정 열기</a></div>`;$('#chips').innerHTML='';return}
+  const vs=DATA.vendors||[];const regions=[...new Set(vs.map(v=>v.region).filter(Boolean))];
+  $('#chips').innerHTML=[['','전체'],...regions.map(r=>[r,r])].map(([r,t])=>`<button class="chip ${region===r?'on':''}" data-r="${esc(r)}">${esc(t)}</button>`).join('');
+  const s=norm($('#q').value.trim());
+  const out=vs.filter(v=>(!region||v.region===region)&&(!s||norm([v.name,v.region,v.city,v.contact,v.title,v.mobile,v.phone,v.email,v.addr,v.contact2,v.phone2].join(' ')).includes(s)))
+    .sort((a,b)=>(a.region||'힣').localeCompare(b.region||'힣')||a.name.localeCompare(b.name));
+  const at=LS.get('bitur.m.at','');const when=at?new Date(at).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+  const cur=location.hash.startsWith('#v/')?decodeURIComponent(location.hash.slice(3)):'';
+  view.innerHTML=`<div class="meta">${out.length}곳${DATA.updated?` · PC 기준 ${esc(DATA.updated)}`:''}${when?` · 받은 시각 ${esc(when)}`:''}${msg?` · <span class="err">${esc(msg)} (저장된 정보를 보여 줘요)</span>`:''}</div>`+
+   (out.map(v=>`<div class="item ${v.id===cur?'sel':''}" data-id="${esc(v.id)}" role="link" tabindex="0"><div class="t"><b>${esc(v.name)}</b><span>${esc([v.region,v.city].filter(Boolean).join(' '))}${v.contact?` · ${esc(v.contact)}`:''}</span></div>${(v.mobile||v.phone)?`<a class="call" href="tel:${tel(v.mobile||v.phone)}" aria-label="전화">☎</a>`:''}</div>`).join('')||'<div class="empty">찾지 못했어요</div>');
+}
+function detail(id){
+  const v=(DATA?.vendors||[]).find(x=>x.id===id);
+  if(!v){pane.innerHTML='<a class="back" href="#">← 목록</a><div class="empty">업체를 찾지 못했어요</div>';return}
+  const row=(k,val,btns='')=>val?`<div class="row"><span class="k">${k}</span><span class="v">${esc(val)}</span>${btns?`<span class="btns">${btns}</span>`:''}</div>`:'';
+  const map=v.addr?`<a class="btn" href="https://map.naver.com/p/search/${encodeURIComponent(v.addr)}" target="_blank" rel="noopener">지도</a>`:'';
+  pane.innerHTML=`<a class="back" href="#">← 목록</a><h1>${esc(v.name)}</h1><div>${(v.region||v.city)?`<span class="tag">${esc([v.region,v.city].filter(Boolean).join(' '))}</span>`:''}${(v.machines||[]).map(m=>`<span class="tag">${esc(m)}</span>`).join('')}</div>
+  <div class="card" style="margin-top:10px">${row('담당자',[v.contact,v.title].filter(Boolean).join(' '))}
+   ${row('휴대폰',v.mobile,`<a class="btn main" href="tel:${tel(v.mobile)}">전화</a><a class="btn" href="sms:${tel(v.mobile)}">문자</a>`)}
+   ${row('전화',v.phone,`<a class="btn main" href="tel:${tel(v.phone)}">전화</a>`)}
+   ${row('이메일',v.email,`<a class="btn" href="mailto:${esc(v.email)}">메일</a>`)}
+   ${row('주소',v.addr,`<button class="btn" data-copy="${esc(v.addr)}">복사</button>${map}`)}
+   ${v.contact2||v.phone2?`${row('담당자2',v.contact2)}${row('전화2',v.phone2,`<a class="btn main" href="tel:${tel(v.phone2)}">전화</a>`)}`:''}
+   ${v.homepage?`<div class="row"><span class="k">홈페이지</span><span class="v">${esc(v.homepage)}</span><a class="btn" href="${/^https?:/.test(v.homepage)?esc(v.homepage):'https://'+esc(v.homepage)}" target="_blank" rel="noopener">열기</a></div>`:''}</div>`;
+}
+function settings(){
+  const c=cfg();
+  view.innerHTML=`<a class="back" href="#">← 목록</a><h1>설정</h1><div class="card"><p class="note" style="margin-top:0">PC의 Bitur가 올린 업체 정보를 비공개 GitHub 저장소에서 읽어 와요. 토큰은 이 폰에만 저장돼요.</p>
+   <label for="repo">데이터 저장소 (예: 아이디/bitur-data)</label><input id="repo" type="text" value="${esc(c.repo)}" autocapitalize="off" autocorrect="off" spellcheck="false">
+   <label for="tok">읽기 전용 토큰</label><input id="tok" type="password" value="${esc(c.token)}" autocomplete="off">
+   <p class="note">토큰은 GitHub에서 'Contents: Read-only' 권한만 준 것을 쓰세요. 폰을 잃어버리면 GitHub에서 토큰만 지우면 돼요.</p>
+   <div style="display:flex;gap:8px;margin-top:8px"><button class="btn main" id="save">저장하고 불러오기</button><button class="btn" id="clear">이 폰에서 지우기</button></div><p id="smsg" class="note"></p></div>`;
+  $('#save').onclick=async()=>{LS.set('bitur.m.repo',$('#repo').value.trim());LS.set('bitur.m.token',$('#tok').value.trim());$('#smsg').textContent='불러오는 중…';const e=await load();if(e){$('#smsg').innerHTML=`<span class="err">${esc(e)}</span>`}else{location.hash=''}};
+  $('#clear').onclick=()=>{['bitur.m.repo','bitur.m.token','bitur.m.data','bitur.m.at'].forEach(k=>localStorage.removeItem(k));DATA=null;$('#smsg').textContent='지웠어요'};
+}
+document.addEventListener('click',async e=>{
+  const r=e.target.closest('[data-r]');if(r){region=r.dataset.r;list();return}
+  const cp=e.target.closest('[data-copy]');if(cp){try{await navigator.clipboard.writeText(cp.dataset.copy);cp.textContent='복사됨'}catch(x){}return}
+  if(e.target.closest('a.call'))return;
+  const it=e.target.closest('.item');if(it){location.hash='#v/'+encodeURIComponent(it.dataset.id)}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.classList?.contains('item'))e.target.click()});
+matchMedia('(min-width:640px)').addEventListener('change',()=>route());   /* 폴드를 접거나 펼 때 바로 다시 배치 */
+$('#q').addEventListener('input',()=>list());
+$('#gear').onclick=()=>{location.hash='settings'};
+$('#sync').onclick=async()=>{const e=await load();route();if(e)list(e)};
+window.addEventListener('hashchange',route);
+(async()=>{route();const e=await load();route();if(e&&DATA)list(e)})();
+</script>
+</body>
+</html>
